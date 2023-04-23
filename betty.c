@@ -18,7 +18,7 @@ return (n1 + n2);
  *
  * Return: 0 (Success)
  */
-int main(void)
+int betty_main(void)
 {
 int result = add(4, 6);
 printf("Result: %d\n", result);

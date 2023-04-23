@@ -14,7 +14,7 @@
  * The purpose of this function is to display a prompt for the user to enter a command.
  * The prompt should display the current working directory followed by a dollar sign ($).
  */
-void prompt(char **av, char **env);
+void prompt(char **env);
 
 #endif /* SHELL_H */
 

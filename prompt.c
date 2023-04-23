@@ -10,7 +10,7 @@
  * @av: Array of strings representing command-line arguments
  * @env: Array of strings representing environment variables
  */
-void prompt(char **av, char **env)
+void prompt(char **env)
 {
 char *string = NULL;
 int state;
