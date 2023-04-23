@@ -3,7 +3,6 @@
 /**
  * main - entry point for the shell program
  * @ac: the number of command-line arguments
- * @av: an array of strings representing the command-line arguments
  * @env: an array of strings representing the environment variables
  *
  * Return: always 0
