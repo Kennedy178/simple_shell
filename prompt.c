@@ -9,20 +9,34 @@
 
 /**
 * prompt - Simple shell prompt that reads input and executes commands
+* my_env - prints my environment
+* execute_command - responsible with paths
 * @av: Array of strings representing command-line arguments
 * @env: Array of strings representing environment variables
 * execute_command - path related
 * @args: pointer to an array that represents the command and its arguments.
 */
+
+extern char **environ;
 void execute_command(char **args) {
-char *path = getenv("PATH");
+char **env = environ;
+char *path;
 char *dir;
-char *p = strtok(path, ":");
-while (p != NULL) {
+char *p;
+pid_t pid;
+if (strcmp(args[0], "env") == 0) {
+while (*env) {
+printf("%s\n", *env++);
+}
+return;
+}
+path = getenv("PATH");
+p = strtok(path, ":");
+ while (p != NULL) {
 dir = malloc(strlen(p) + strlen(args[0]) + 2);
 sprintf(dir, "%s/%s", p, args[0]);
 if (access(dir, X_OK) == 0) {
-pid_t pid = fork();
+pid = fork();
 if (pid == 0) {
 execv(dir, args);
 perror("execv");
@@ -41,6 +55,13 @@ p = strtok(NULL, ":");
 }
 printf("%s: command not found\n", args[0]);
 return;
+}
+void my_env() {
+extern char **environ;
+int i = 0;
+while (environ[i] != NULL) {
+printf("%s\n", environ[i++]);
+}
 }
 void prompt(char **env)
 {

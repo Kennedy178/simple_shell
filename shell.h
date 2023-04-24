@@ -10,6 +10,7 @@
  * prompt - Displays a prompt for the user to enter a command.
  * shell_exit - exits shell
  * execute_command - command not found or found
+ * my_env - Implement the env built-in, that prints the current environment
  * args - arguments
  * @env: Pointer to a character array of environment variables.
  *
@@ -20,6 +21,7 @@
 void prompt(char **env);
 void shell_exit();
 void execute_command(char **args);
+void my_env();
 
 #endif /* SHELL_H */
 
