@@ -5,6 +5,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#define MAX_COMMAND 10
+
 /**
 * prompt - Simple shell prompt that reads input and executes commands
 * @av: Array of strings representing command-line arguments
@@ -14,12 +16,12 @@ void prompt(char **env)
 {
 char *string = NULL;
 int state;
+int pn;
 size_t km = 0;
 ssize_t ken_size;
-char *argv[2] = {NULL, NULL};
+char *argv[MAX_COMMAND];
 /* Create child */
 pid_t inherit_pid;
-
 /* Check if running in interactive mode */
 if (isatty(STDIN_FILENO))
 {
@@ -27,23 +29,22 @@ while (1)
 {
 /* Print prompt to ask user for input */
 printf("ken_shell$ ");
-
 /* Read input from user */
 ken_size = getline(&string, &km, stdin);
-
 /* Handle errors */
 if (ken_size == -1)
 {
 free(string);
 exit(EXIT_FAILURE);
 }
-
 /* Remove newline character from input string */
 string[strcspn(string, "\n")] = '\0';
-
 /* Set the command to be executed */
-argv[0] = string;
-
+pn = 0;
+argv[pn] = strtok(string, " ");
+while (argv[pn] && pn < MAX_COMMAND - 1) {
+argv[++pn] = strtok(NULL, " ");
+}
 /* Create child process to execute the command */
 inherit_pid = fork();
 if (inherit_pid == -1)
@@ -52,7 +53,6 @@ free(string);
 perror("fork");
 exit(EXIT_FAILURE);
 }
-
 if (inherit_pid == 0)
 {
 /* Child process: execute the command */
@@ -80,13 +80,10 @@ if (ken_size == -1)
 free(string);
 exit(EXIT_FAILURE);
 }
-
 /* Remove newline character from input string */
 string[strcspn(string, "\n")] = '\0';
-
 /* Set the command to be executed */
 argv[0] = string;
-
 /* Create child process n execute command */
 inherit_pid = fork();
 if (inherit_pid == -1)
@@ -95,7 +92,6 @@ free(string);
 perror("fork");
 exit(EXIT_FAILURE);
 }
-
 if (inherit_pid == 0)
 {
 /* Child process: execute the command */
@@ -110,7 +106,6 @@ else
 /* Parent process: wait for child process to complete*/
 wait(&state);
 }
-
 /* Free memory & exit */
 free(string);
 exit(EXIT_SUCCESS);
