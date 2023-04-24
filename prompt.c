@@ -4,6 +4,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
+
+/* Flag to indicate whether the shell should exit */
+volatile sig_atomic_t should_exit = 0;
+
+/**
+* sigint_handler - Signal handler for SIGINT
+*/
+void sigint_handler(int signum __attribute__((unused)))
+{
+should_exit = 1;
+}
 
 /**
 * prompt - Simple shell prompt that reads input and executes commands
@@ -20,10 +32,13 @@ char *argv[2] = {NULL, NULL};
 /* Create child */
 pid_t inherit_pid;
 
+/* Register signal handler for SIGINT */
+signal(SIGINT, sigint_handler);
+
 /* Check if running in interactive mode */
 if (isatty(STDIN_FILENO))
 {
-while (1)
+while (!should_exit)
 {
 /* Print prompt to ask user for input */
 printf("ken_shell$ ");
@@ -114,6 +129,5 @@ wait(&state);
 /* Free memory & exit */
 free(string);
 exit(EXIT_SUCCESS);
-}
 }
 
