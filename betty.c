@@ -14,7 +14,7 @@ int add(int n1, int n2)
 return (n1 + n2);
 }
 /**
- * main - starting the program
+ *betty_main - starting the program
  *
  * Return: 0 (Success)
  */
