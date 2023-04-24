@@ -11,7 +11,37 @@
 * prompt - Simple shell prompt that reads input and executes commands
 * @av: Array of strings representing command-line arguments
 * @env: Array of strings representing environment variables
+* execute_command - path related
+* @args: pointer to an array that represents the command and its arguments.
 */
+void execute_command(char **args) {
+char *path = getenv("PATH");
+char *dir;
+char *p = strtok(path, ":");
+while (p != NULL) {
+dir = malloc(strlen(p) + strlen(args[0]) + 2);
+sprintf(dir, "%s/%s", p, args[0]);
+if (access(dir, X_OK) == 0) {
+pid_t pid = fork();
+if (pid == 0) {
+execv(dir, args);
+perror("execv");
+exit(EXIT_FAILURE);
+} else if (pid > 0) {
+waitpid(pid, NULL, 0);
+free(dir);
+return;
+} else {
+perror("fork");
+exit(EXIT_FAILURE);
+}
+}
+free(dir);
+p = strtok(NULL, ":");
+}
+printf("%s: command not found\n", args[0]);
+return;
+}
 void prompt(char **env)
 {
 char *string = NULL;
@@ -39,12 +69,19 @@ exit(EXIT_FAILURE);
 }
 /* Remove newline character from input string */
 string[strcspn(string, "\n")] = '\0';
+/*Check for exit command*/
+if (strcmp(string, "exit") == 0) {
+free(string);
+shell_exit();
+}
 /* Set the command to be executed */
 pn = 0;
 argv[pn] = strtok(string, " ");
 while (argv[pn] && pn < MAX_COMMAND - 1) {
 argv[++pn] = strtok(NULL, " ");
 }
+ /* Execute the command */
+execute_command(argv);
 /* Create child process to execute the command */
 inherit_pid = fork();
 if (inherit_pid == -1)
@@ -73,7 +110,6 @@ else /* Non-interactive mode*/
 {
 /* Read input from standard input */
 ken_size = getline(&string, &km, stdin);
-
 /* Handle errors */
 if (ken_size == -1)
 {
@@ -82,8 +118,15 @@ exit(EXIT_FAILURE);
 }
 /* Remove newline character from input string */
 string[strcspn(string, "\n")] = '\0';
+/*Check for exit command*/
+if (strcmp(string, "exit") == 0) {
+free(string);
+shell_exit();
+}
 /* Set the command to be executed */
 argv[0] = string;
+/* Execute the command */
+execute_command(argv);
 /* Create child process n execute command */
 inherit_pid = fork();
 if (inherit_pid == -1)
@@ -111,4 +154,3 @@ free(string);
 exit(EXIT_SUCCESS);
 }
 }
-

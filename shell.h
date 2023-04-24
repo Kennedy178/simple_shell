@@ -6,10 +6,11 @@
 #include <unistd.h>
 #include <string.h>
 
-
 /**
  * prompt - Displays a prompt for the user to enter a command.
- * @av: Pointer to a character array of arguments passed to the program.
+ * shell_exit - exits shell
+ * execute_command - command not found or found
+ * args - arguments
  * @env: Pointer to a character array of environment variables.
  *
  * This function does not have a return value.
@@ -17,6 +18,8 @@
  * The prompt should display the current working directory followed by a dollar sign ($).
  */
 void prompt(char **env);
+void shell_exit();
+void execute_command(char **args);
 
 #endif /* SHELL_H */
 
