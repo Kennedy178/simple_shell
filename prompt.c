@@ -8,14 +8,9 @@
 #define MAX_COMMAND 10
 
 /**
-* prompt - Simple shell prompt that reads input and executes commands
-* my_env - prints my environment
-* execute_command - responsible with paths
-* @av: Array of strings representing command-line arguments
-* @env: Array of strings representing environment variables
-* execute_command - path related
-* @args: pointer to an array that represents the command and its arguments.
-*/
+ * execute_command - Executes the command specified by the given arguments.
+ * @args: A pointer to an array of strings representing the command and its arguments.
+ */
 
 extern char **environ;
 void execute_command(char **args) {
@@ -56,6 +51,11 @@ p = strtok(NULL, ":");
 printf("%s: command not found\n", args[0]);
 return;
 }
+
+/**
+ * my_env - Prints the environment variables.
+ */
+
 void my_env() {
 extern char **environ;
 int i = 0;
@@ -63,6 +63,12 @@ while (environ[i] != NULL) {
 printf("%s\n", environ[i++]);
 }
 }
+
+/**
+ * prompt - Simple shell prompt that reads input and executes commands.
+ * @env: An array of strings representing environment variables.
+ */
+
 void prompt(char **env)
 {
 char *string = NULL;
@@ -175,3 +181,4 @@ free(string);
 exit(EXIT_SUCCESS);
 }
 }
+
